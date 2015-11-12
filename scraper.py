@@ -51,7 +51,7 @@ def validateURL(url):
         else:
             ext = os.path.splitext(url)[1]
         validURL = r.getcode() == 200
-        validFiletype = ext in ['.csv', '.xls', '.xlsx', '.docx']
+        validFiletype = ext.lower() in ['.csv', '.xls', '.xlsx']
         return validURL, validFiletype
     except:
         print ("Error validating URL.")
@@ -86,7 +86,7 @@ def convert_mth_strings ( mth_string ):
 #### VARIABLES 1.0
 
 entity_id = "E0102_BCC_gov"
-url = "http://www.bristol.gov.uk/page/council-and-democracy/spending-over-%C2%A3500"
+url = "https://www.bristol.gov.uk/council-spending-performance/spending-over-500"
 errors = 0
 data = []
 
@@ -98,8 +98,7 @@ soup = BeautifulSoup(html, "lxml")
 
 #### SCRAPE DATA
 
-block = soup.find('div', attrs = {'class':'field field-name-body field-type-text-with-summary field-label-hidden no-sidebars'})
-links = block.findAll('a', href=True)
+links = soup.find('h2', text = re.compile(u'Spending over £500 reports')).find_all_next('a')
 for link in links:
     csvfile = link.text.strip()
     if 'csv' in csvfile:
@@ -109,7 +108,7 @@ for link in links:
              Mth = 'October'
              csvYr = csvYr[-4:]
         if 'http://' not in link['href']:
-            url = 'http://www.bristol.gov.uk'+link['href']
+            url = 'http://www.bristol.gov.uk'+link['href'].split('\t')[-1].strip()
         else:
             url = link['href']
         csvMth = Mth[:3]
