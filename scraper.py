@@ -107,7 +107,7 @@ for link in links:
         if 'October' in csvYr:
              Mth = 'October'
              csvYr = csvYr[-4:]
-        if 'http://' not in link['href']:
+        if 'http' not in link['href']:
             url = 'http://www.bristol.gov.uk'+link['href'].split('\t')[-1].strip()
         else:
             url = link['href']
@@ -137,4 +137,3 @@ if errors > 0:
 
 
 #### EOF
-
